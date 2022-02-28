@@ -3,7 +3,7 @@
 usage()
 {
 
-	echo "  usage:`basename $0` -1 reads.fasta -2 genome.fasta -o outdir -g genome.fasta [-r reads_number]"
+	echo "  usage:`basename $0` -1 reads.fasta -2 genome.fasta -o outdir -g genome_size [-r reads_number]"
 	echo "  -1  :               reads file in FASTA format"
 	echo "  -2  :               genome file in FASTA format"
 	echo "  -o   :              outdir"
