@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#计算swtich error
+sum=0
+switch_num=0
+cat valid_ONT_reads.txt|awk '{print $1}'|uniq > valid_window_id.txt &&
+while read line
+do
+  this_line=`grep $line valid_ONT_reads.txt|awk '{print $4}'`
+  line_num=`echo "$this_line"|wc -l`
+  chrom_num=`echo "$this_line"|uniq|wc -l`
+  if [[ $chrom_num -ne 1 ]]
+  then
+    max_num=`echo "$this_line"|sort|uniq -c|sort -rn|sed -n '1p'|awk '{print $1}'`
+    result=`expr $line_num - $max_num`
+    switch_num=`expr $switch_num + $result`
+  fi
+done < valid_window_id.txt
+
+while read line
+do
+  this_line_num=`grep $line readlen.txt|awk '{print $2}'`
+  total_length=`expr $total_length + $this_line_num`
+  echo $total_length
+done < valid_window_id.txt
+
+a=1000000
+length=`awk -v x=$total_length -v y=$a 'BEGIN{if(y){printf "%.2f\n",x / y}}'`
+total_window_num=`cat valid_ONT_reads.txt|wc -l`
+swtich_error1=`awk 'BEGIN{printf "%.2f%\n",'$switch_num'/'$total_window_num'*100}'`
+swtich_error2=`awk -v x=$switch_num -v y=$length 'BEGIN{if(y){printf "%.2f\n",x / y}}'`
+
+echo "switch_num : $switch_num" >> result.txt
+echo "total_window_num : $total_window_num" >> result.txt
+echo "total_reads_length : $length" >> result.txt
+echo "swtich_error(switch_num/total_window_num) : $swtich_error1" >> result.txt
+echo "swtich_error(switch_num/total_reads_length) : $swtich_error2 /MB" >> result.txt

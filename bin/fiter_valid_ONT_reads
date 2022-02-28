@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#Sort the windows after preliminary blast filtering according to the segment of reads (for subsequent results, it is out of order at present)
+sort -t $'\t' -k1,1 -k2,2n valid_window.txt >> valid_window_sorted.txt
+
+#Filtering can be used to evaluate the effective ont reads of switch error. It is required that the reads contain at least 5 valid windows.
+cat valid_window_sorted.txt|awk '{s[$1] += 1}END{for (i in s){print i,s[i]}}'|awk '$2>=5{print $0}'|awk '{print $1}'|while read line;do grep $line valid_window_sorted.txt >> valid_ONT_reads.txt;done
