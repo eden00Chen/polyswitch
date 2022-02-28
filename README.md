@@ -3,7 +3,7 @@
 This is a software to evaluate polyploid typing based on ont ultra long data.
 ## Installation
 ```
-$ git clone https://github.com/eden00Chen/polyswitch
+$ git clone https://github.com/eden00Chen/polyswitch.git
 $ cd polyswitch
 $ chmod +x bin/*
 $ chmod +x scripts/*
