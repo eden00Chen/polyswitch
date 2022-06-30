@@ -1,6 +1,6 @@
 # polyswitch
 ## Introduction
-This is a software to evaluate polyploid typing based on ont ultra long data.
+Polyswitch is a program to evaluate switch errors in haplotype-resolved genome assemblies, including heterozygous diploid and polyploid genomes, based on ONT ultra long data. A number of ONT ultra-long reads were selected and subsequently split into 5-kb non-overlapping windows. The 5-kb windows were BLASTn against the haplotype-resolved genome assembly using default parameters, and only windows that meet the following criteria were considered as validate windows and thus kept for further analysis: 1) For each window, we allow the bit score in the best match should be 1.5 times larger than the secondary match; 2) the best bit score should be larger than 1000. In addition, we also restricted that these reads with at least 5 valid windows were retained for assessment of switch errors. We next used the majority rule to determine the original location of the ONT reads. For instance, if more than 50% of validated windows in one ultra-long read mapped to Chr01A, we considered this read was originally from Chr01A rather than other alternative haplotypes. Any validate window against the original location was considered as a switch error.
 ## Installation
 ```
 $ git clone https://github.com/eden00Chen/polyswitch.git
@@ -29,13 +29,20 @@ polyswitch -1 reads.fasta -2 genome.fasta -o outdir -g genome_size [-r reads_num
 * output  
 result.txt ：
 ```
-reads_file : head100.rn.fasta
-genome_file : LW.p_utg.fasta
-genome_size : 1500311513
-reads_number : 99
-switch_num : 153
-total_window_num : 203
-total_reads_length : 33.09
-swtich_error(switch_num/total_window_num) : 7.52%
-swtich_error(switch_num/total_reads_length) : 4.62 /MB
+#version is: 1.1.0
+#reads_file  : /public/home/DATA/test_ONT_reads.fasta.gz
+#genome_file : /public/home/DATA/test_hifiasam.fasta
+genome_size  : 1500311513
+reads_number : 4000
+                  
+  ***** Results: *****
+                  
+		switch_num : 4936
+		total_window_num : 65070
+		total_reads_length : 973.76
+		swtich_error(switch_num/total_window_num) : 7.59%
+		swtich_error(switch_num/total_reads_length) : 5.07 /MB
+Dependencies and versions:
+  seqkit : 2.1.0
+  blast  : 2.3.0+
 ```
