@@ -3,28 +3,30 @@
 usage()
 {
 
-	echo "  usage:`basename $0` -1 reads.fasta -2 genome.fasta -o outdir -g genome_size [-r reads_number]"
-	echo "  -1  :               reads file in FASTA format"
-	echo "  -2  :               genome file in FASTA format"
-	echo "  -o   :              outdir"
-	echo "  -g   :              genome size(bp)"
-        echo "  -r   :              select the number of reads,default:1000"
+	echo "  usage:`basename $0` -1 reads.fasta -2 genome.fasta -o outdir -g genome_size [-r reads_number] -t thread"
+	echo "  -1  :              reads file in FASTA format"
+	echo "  -2  :              genome file in FASTA format"
+	echo "  -o  :              outdir"
+	echo "  -g  :              genome size(bp)"
+        echo "  -r  :              select the number of reads,default:1000"
+        echo "  -t  :              thread"
         exit 0
 }
 
 ##get options
-while getopts ':1:2:o:g:r:' OPT;do
+while getopts ':1:2:o:g:r:t:' OPT;do
   case $OPT in
              1)reads_file="$OPTARG";;
              2)genome_file="$OPTARG";;
              o)outdir="$OPTARG";;
              g)genome_size="$OPTARG";;
              r)reads_number="$OPTARG";;
+             t)thread="$OPTARG";;
              ?)usage;;
   esac
 done
 
-if [ -z $reads_file ] || [ -z $genome_file ] || [ -z $outdir ] || [ -z $genome_size ]; then
+if [ -z $reads_file ] || [ -z $genome_file ] || [ -z $outdir ] || [ -z $genome_size ] || [ -z $thread ]; then
          usage
 fi
 ### set default values while optional variants were not set
@@ -36,25 +38,35 @@ fi
 ###link required files
 cd $outdir
 
-ln -s ${reads_file} ./reads.fasta
-ln -s ${genome_file} ./genome.fasta
+if [ "${reads_file##*.}" = "gz" ]; then
+  pigz -k -d -c -p $thread $reads_file > ./reads_unzip.fasta
+  ln -s reads_unzip.fasta ./reads.fasta
+else
+  ln -s ${reads_file} ./reads.fasta
+fi
+
+if [ "${genome_file##*.}" = "gz" ]; then
+  pigz -k -d -p $thread $genome_file > ./genome_unzip.fasta
+  ln -s genome_unzip.fasta ./genome.fasta
+else
+  ln -s ${genome_file} ./genome.fasta
+fi
 
 echo "reads_file : $reads_file"
 echo "genome_file : $genome_file"
 echo "genome_size : $genome_size"
 echo "reads_number : $reads_number"
 
-filter_qualified_reads.py -f1 reads.fasta -f2 genome.fasta -o $outdir -g $genome_size -r $reads_number
-#FAI_FILE=$(pwd)/$reads_file
-#cat ${reads_file}.fai|cut -f 1-2 > readlen.txt
+filter_qualified_num_reads.py -f1 reads.fasta -o $outdir -g $genome_size -r $reads_number
+
 cat reads.fasta.fai|cut -f 1-2 > readlen.txt
 
-cat head_reads.fasta|seqkit sliding -s 5000 -W 5000 -g > sliding.fasta 
+cat head_reads.fasta|seqkit sliding -s 5000 -W 5000 -g -j $thread > sliding.fasta 
 rename.py sliding.fasta > heads_sliding.fasta
 #rm sliding.fasta
 
 makeblastdb -in genome.fasta -dbtype nucl -parse_seqids -out genome
-blastn -query heads_sliding.fasta -out blast.out -db genome -outfmt 6 -evalue 1e-5 -num_threads 24
+blastn -query heads_sliding.fasta -out blast.out -db genome -outfmt 6 -evalue 1e-5 -num_threads $thread
 
 awk '$12>=1000{print $0}' blast.out|sort -t $'\t' -k1,1 -k12rn >> BLAST_sort01.txt
 
@@ -62,9 +74,10 @@ fiter_valid_windows.py
 
 fiter_valid_ONT_reads
 
-echo "reads_file : $reads_file" >> result.txt
-echo "genome_file : $genome_file" >> result.txt
-echo "genome_size : $genome_size" >> result.txt
+echo "#version is: 1.1.0" >> result.txt
+echo "#reads_file  : $reads_file" >> result.txt
+echo "#genome_file : $genome_file" >> result.txt
+echo "genome_size  : $genome_size" >> result.txt
 echo "reads_number : $reads_number" >> result.txt
 Calculate_switch_error
 

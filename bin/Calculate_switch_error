@@ -30,8 +30,14 @@ total_window_num=`cat valid_ONT_reads.txt|wc -l`
 swtich_error1=`awk 'BEGIN{printf "%.2f%\n",'$switch_num'/'$total_window_num'*100}'`
 swtich_error2=`awk -v x=$switch_num -v y=$length 'BEGIN{if(y){printf "%.2f\n",x / y}}'`
 
-echo "switch_num : $switch_num" >> result.txt
-echo "total_window_num : $total_window_num" >> result.txt
-echo "total_reads_length : $length" >> result.txt
-echo "swtich_error(switch_num/total_window_num) : $swtich_error1" >> result.txt
-echo "swtich_error(switch_num/total_reads_length) : $swtich_error2 /MB" >> result.txt
+echo "                  " >> result.txt
+echo "  ***** Results: *****" >> result.txt
+echo "                  " >> result.txt
+echo "		switch_num : $switch_num" >> result.txt
+echo "		total_window_num : $total_window_num" >> result.txt
+echo "		total_reads_length : $length" >> result.txt
+echo "		swtich_error(switch_num/total_window_num) : $swtich_error1" >> result.txt
+echo "		swtich_error(switch_num/total_reads_length) : $swtich_error2 /MB" >> result.txt
+echo "Dependencies and versions:" >> result.txt
+echo "  seqkit : 2.1.0" >> result.txt
+echo "  blast  : 2.3.0+" >> result.txt
