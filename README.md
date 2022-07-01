@@ -24,25 +24,41 @@ polyswitch -1 reads.fasta -2 genome.fasta -o outdir -g genome_size [-r reads_num
 -2  :               genome file in FASTA format
 -o  :               outdir
 -g  :               genome size(bp)
--r  :               select the number of reads,default:1000
+-r  :               select the number of reads,default:1000,recommend:4000
 ```
-* output  
-result.txt ：
+
+## Test
+* test_data location:(data szie:1.3G)
+```
+wget ftp://43.138.130.14/pub/test_data.tar.gz
+```
+* command line:
+```
+polyswitch -1 reads_absolute_path -2 genome_absolute_path -o out_dir -g 146298676 -r 1000 -t 20
+```
+* result:
 ```
 #version is: 1.1.0
-#reads_file  : /public/home/DATA/test_ONT_reads.fasta.gz
-#genome_file : /public/home/DATA/test_hifiasam.fasta
-genome_size  : 1500311513
-reads_number : 4000
+#reads_file  : sample_reads.fasta
+#genome_file : sample_genome.fasta
+genome_size  : 146298676
+reads_number : 1000
                   
   ***** Results: *****
                   
-		switch_num : 4936
-		total_window_num : 65070
-		total_reads_length : 973.76
-		swtich_error(switch_num/total_window_num) : 7.59%
-		swtich_error(switch_num/total_reads_length) : 5.07 /MB
+		switch_num : 562
+		total_window_num : 5088
+		total_reads_length : 85.93
+		swtich_error(switch_num/total_window_num) : 11.05%
+		swtich_error(switch_num/total_reads_length) : 6.54 /MB
 Dependencies and versions:
   seqkit : 2.1.0
   blast  : 2.3.0+
 ```
+## Polyswitch note
+* Only supports ONT ultra-long reads.
+* Support the input of data in GZ format, but the file naming rule must be filename.gz
+* The input path and output path of the file must be absolute                  
+  not: reads.fasta
+  
+  ex: /public/home/polyswitch_project/Data/reads.fasta
