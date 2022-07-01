@@ -14,7 +14,7 @@ $ export PATH=/your/path/to/polyswitch/scripts/:/your/path/to/polyswitch/bin/:$P
 ## Dependencies
 Following is a list of thirty-party programs that will be used in polyswitch pipeline.
 * seqkit v2.1.0 +
-* blast v2.11.0 +
+* blast v2.3.0 +
 * python v3.9.5 + (Python Toolkit : pandas、numpy、pysam、pyfaidx、Bio)
 ## Usage
 ```
