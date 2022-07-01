@@ -17,7 +17,6 @@ Following is a list of thirty-party programs that will be used in polyswitch pip
 * blast v2.11.0 +
 * python v3.9.5 + (Python Toolkit : pandas、numpy、pysam、pyfaidx、Bio)
 ## Usage
-* input
 ```
 polyswitch -1 reads.fasta -2 genome.fasta -o outdir -g genome_size [-r reads_number]
 -1  :               reads file in FASTA format
