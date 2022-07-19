@@ -45,7 +45,7 @@ polyswitch -1 reads_absolute_path -2 genome_absolute_path -o out_dir -g 14629867
 genome_size  : 146298676
 reads_number : 1000
                   
-  ***** Results: *****
+                ***** Results: *****
                   
 		switch_num : 562
 		total_window_num : 5088
