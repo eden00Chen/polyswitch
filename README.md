@@ -55,6 +55,8 @@ reads_number : 1000
 Dependencies and versions:
   seqkit : 2.1.0
   blast  : 2.3.0+
+  parafly : vr2013_01_21-1+
+  pigz : v2.6
 ```
 ## Polyswitch note
 * Only supports ONT ultra-long reads.
